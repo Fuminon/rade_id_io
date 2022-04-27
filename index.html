@@ -8,64 +8,133 @@
 </head>
 <body>
  <p>
-   ■シェルの基本事項
-	・#!/bin/shで始める　bシェルで実行することを明示し、ログインシェルの影響を無くす
-	・ワイルドカード
-		*　文字列全部
-		?　１文字
-		[]　[]の中に含まれる文字のどれか１つ　-で範囲指定も可能
-		[]　[]の中に含まれない文字
-	・引用符
-		\　１文字をクォート　直後の特殊文字をエスケープする
-		'　囲まれた文字列中のすべての特殊文字をエスケープする　エスケープできないのは自身だけ
-		"　$,`,\の３文字以外の特殊文字をクォートする
-	・バッククォート
-		囲まれたコマンドを実行し、結果をその位置に書き込む
-	・コマンドセパレータ
-		;　１つのコマンドの区切り(Enterと同じ)
-		|　出力結果を次のコマンドの入力にする
-		&　バックグラウンドで実行する
-		||　OR演算子
-		&&　AND演算子
+2-1
+見出し部、環境部、データ部、手続き部
+2-2
+identification division.
+environment division.
+data division.
+procedure division.
+2-3
+identification division → プログラムの名前
+environment division → プログラム中で特定の電子計算機に依存
+data division → プログラム中で扱うデータ
+procedure division → 実際に電子計算機に実行させる手続き
+2-4
+IDENTIFICATION DEVISION
+                ↑     ↑
+PROGRAM ID.
+       ↑   ↑
+3-1
+ファイルの予約語として誤りのもの
+FILE 421-8081 
+3-2
+データ名として誤りのもの
+DATA 0011 -DATA- **DATA**
+3-3
+30文字
+3-4
+001400 select master-file assign PTINTER.
 
-■シェル変数
-	・変数名に使えるのはアルファベット、数字、アンダースコア(_)　大文字と小文字は区別される　数字は先頭には使えない
-	・変数にセットされる値はすべて文字列
-	・変数に値を代入する際は＝を使う　＝の両脇にスペースを入れてはいけない
-	・変数の値を参照する際は変数名の先頭に$をつける
-	・${変数:-value}　変数が未設定の場合(登場していないあるいはヌル値が設定されている)に、valueを返す(変数に値を設定しない)　←位置パラメタにも利用できる
-	・${変数:+value}　変数が設定されている時に、指定した値を返す(変数に値を設定しない)
-	・$?変数　直前のコマンドの終了ステータスが設定される
-	・$$変数　現在動作しているコマンドのプロセスＩＤが設定される
-■シェル関数
-	・任意の名前(){ comannd; }
-	・任意の名前()
-		{
-		command
-		}
-	・,(ドットコマンド)シェルスクリプトを現在のシェルで実行→シェルスクリプト内の関数も現在のシェルで利用可能に
-	・:(ヌル関数)何もしない関数　終了ステータスは常に0になる　: > fileとすることでnullファイルを作成できる
-	・eval　変数やコマンドの置換を一遍に行う　対象文字列を``で括っていると、置換した結果をコマンドとして実行する　くくっていなければ展開するだけ
-	・exit　引数に数字を与えて終了ステータスを指定できる　$?に渡される
-	・export　引数に指定した変数を以後の他のコマンドでも使用できるようにする
-	・read　read 変数　とし、変数にキーボードからの入力を格納する
-	・set　位置パラメタに引数をセットする
-	・shift　位置パラメタをずらす　$1に$2のように　引数でずらす数を指定できる　位置パラメタの値が入っていないところまでずらそうとするとエラーになる　$#で全部クリアできる
+004100 write ms-record after 2
+3-5
+write の後に何も指定しないとafter 1 とみなされるため3行で印字される
+before の後にafterやその逆にすると印字タイミングの違いにより印字する行が重なってしまう
+4-1
+基本項目:社員番号　姓　名　基本給　通勤手当　住宅手当　残業時間
+集団項目;社員名　姓名　諸手当　支給明細　給与記録
+4-2
+諸手当の追加
+05 諸手当
+	07 通勤手当
+	07 住宅手当
+	07 地域手当
+	07 家族手当
+4-3
+A X-18 SAITEN-KEKKA 0033-7X WATASI Z KIHONKYUU DATA-NAME SEIMEI
+4-4
+05 SHAIN-BANGOO PIC X(6).
+	07 SEI PIC X(12).
+	07 MEI PIC X(12).
+05 KIHONKYUU PIC S9(8)V.
+	07 TUUKIN-TEATE PIC S9(8)V.
+	07 JUUTAKU-TEATE PIC S9(8)V.
+4-8
+(b) 異なる
+(c) 異なる
+(d) 異なる
+4-9
+支払額 = 約13万9000円
+4-10
+(1)関数やべき乗は近似計算になるため、1年ごとの性格な数字は四則計算で求める必要がある
+(2)端数の扱いをあらかじめ定めておく必要がある
+(3)最終年は端数の精算があるため均等払いの値と必ずしも一致しない
+4-11
+compute goukei-tokuten
+= 2* (suugaku-tokuten + eigo-tokuten + kokugo-tokuten) + sentaku-a-tokuten + sentaku-b-tokuten
+4-12
+compute nikkyuu = kihonnkjyuu / 25
+compute zikankyuu = nikkyuu / 7
+compute zangyo-teate = 1.25 * zikankyuu * zangyoo-zikan
+4-13
+compute k = k + 1
+4-14
+n=l+n
+sikyuugaku = kaikin-teate + tokubetu-teate + sikyuugaku
+sikyuugaku = sikyuugaku - 7000
+tedori = tedori - 2000 - syakkin
+x = 2*x
+mooke = mooke*nissu
+okane = okane / ninzuu
+mooke = mooke / 2
+sikyuugaku = zangyoo-teate + 2000
+sikyuugaku = zangyoo-teate + 2000
+x = 6 / 2
+wakemae = mooke / ninzuu
+kame-no-kazu = asi-no-kazu / 4
+x = 6 / 2
+wakemae = 6 / 2
+kame-no-kazu = asi-no-kazu / 4
+4-15
+add  suugaku-tokuten eigo-tokuten kokugo-tokuten sentaku-a-tokuten sentaku-b-tokuten giving goukei-tokuten
+4-16
+file section.
+fd K-file.
+01 kyuyokiroku.
+	03 shainmei
+		05 shianbangou pic x(6).
+		05 seimei
+			07 sei pic x(12).
+			07 mei pic x(12).
+	03 sikyuumeisai
+		05 kihonkyu pic s9(8)v.
+		05 shoteate
+			07 tuukinnteate s9(8)v.
+			07 juutakuteate s9(8)v.
+		05 zangyouzikan pic s9(3)v9.
+		05 zangyouteate pic s9(8).
+		05 sikyugaku pic s9(8).
+		・・・
+		read k-file at end go to sooshuukei end-read
+		compute nikyuu = kihonnkyuu / 25
+		compute zikankyuu = nikkyuu / 7
+		compute zanngyouteate = 1.25 * zanngyouzikan * zikankyuu
+		compute sikyuugaku = kihonnkyuu + tuukinnteate + juutakuteate + zanngyouteate
+5-1
+workig-storage section.
 
-■リダイレクション
-	・command > file 2>&1 標準エラーを標準出力に、標準出力はfileに　左記のようにすることで出力とエラーを両方fileに出せる
+5-2
+add suugaku-tokuten to suugaku-sookei
+add egio-tokuten to eigo-sookei
+add kokugo-tokuten to kokugo-sookei
+add 1 to zyukensya-suu
 
-■環境変数
-	・exportコマンドで他プロセスにも環境変数の変更を適用させることができる
-	・子のの環境での(環境)変数への変更を親にも反映させたい場合は.コマンドで実行する
-	・PATH変数　ディレクトリの一覧　コマンドを打った際にこのリストを参照していく　個人的なコマンドをコマンド名だけで実行できるようにする場合この変数に追加すればよい　PATH=$PATH:(対象ディレクトリパス); export PATH
+divide suugaku-sookei by zyukensya-suu giving suugaku-heikin
+divide eigo-sookei by zyukensya-suu giving eigo-heikin
+divide kokugo-sookei by zyukensya-suu giving kokugo-heikin
 
-■フィルタの利用方法
-	・sedコマンド　sed -e "s/OLDTEXT/NEWTEXT/" INPUTFILE INPUTFILE中各行の先頭にある"OLDTEXT"を"NEWTEXT"に置換する
-	・ファイル内すべての対象文字列を置換する場合はオプションgを指定する　"s/OLDTEXT/NEWTEXT/g"
-	・出力する行をしているする場合は -nオプションを指定　必ずpと合わせて対象を指定する　-n "2p" でファイルの2行目を出力　-ne "s/OLDTEXT/NEWTEXT/p"とすることで置換した行を出力する
-	・行頭^ 行末$(エスケープ要) 任意の1文字. 直前の文字の連続* 
-	・\(と\)で囲んだ部分だけを抜き出すことができる
+5-4
+データを引用するわけではなく、計算した結果を格納するだけだから
  </p>
  <!-- コピー対象要素とコピーボタン -->
     <input id="copyTarget" type="text" value="コピー対象の文言">
